@@ -1,5 +1,6 @@
 function splitJobCharacters(str) {
-  let splitted = [];
+  // "idaz-sfmutvi,anggara-sfutqji,fika-sfldbi" -> ["idaz","sfmutvi","anggara","sfutqji","fika","sfldbi"]
+  const splitted = [];
 
   let currentCharacter = "";
   for (let i = 0; i < str.length; i++) {
@@ -20,6 +21,8 @@ function splitJobCharacters(str) {
 }
 
 function reverseJobCharacters(arr) {
+  // ["idaz","sfmutvi","anggara","sfutqji","fika","sfldbi"] -> ["idaz","ivtumfs","anggara","ijqtufs","fika","ibdlfs"]
+
   // loop setiap job
   for (let i = 1; i < arr.length; i += 2) {
     let reversed = "";
@@ -68,10 +71,11 @@ const alphabets = [
 ];
 function decryptJobCharacters(arr) {
   // loop setiap job
+  // ["idaz","ivtumfs","anggara","ijqtufs","fika","ibdlfs"] -> ["idaz","hustler","anggara","hipster","fika","hacker"]
   for (let i = 1; i < arr.length; i += 2) {
     let decrypted = "";
 
-    const job = arr[i];
+    const job = arr[i]; // ivtumfs
     // loop setiap char dalam job
     for (let char = 0; char < job.length; char++) {
       const letter = job[char];
@@ -97,6 +101,7 @@ function decryptJobCharacters(arr) {
 }
 
 function makingDreamTeam(arr) {
+  // ["idaz","hustler","anggara","hipster","fika","hacker"] -> [["idaz","hustler"],["anggara","hipster"],["fika","hacker"]]
   const team = [];
 
   let member = [];
@@ -127,6 +132,8 @@ function startUpMatchMaking(str) {
     return "Minimum 3 members in the team";
   }
 
+  // [["idaz","hustler"],["anggara","hipster"],["fika","hacker"]];
+
   // SECOND CHECK: Komposisi team sesuai kebutuhan
   // cek job lengkap atau tidak
   const requiredJobs = ["hustler", "hipster", "hacker"];
@@ -144,7 +151,7 @@ function startUpMatchMaking(str) {
     }
 
     if (!taken) {
-      // cek apakah job sesuai requirement sebelum ditambahkan (tambahan)
+      // cek apakah job sesuai requirement sebelum ditambahkan
       for (let j = 0; j < requiredJobs.length; j++) {
         if (job === requiredJobs[j]) {
           foundJobs.push(job);
