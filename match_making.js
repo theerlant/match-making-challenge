@@ -9,13 +9,9 @@ function splitJobCharacters(str) {
       currentCharacter = "";
     } else {
       currentCharacter += str[i];
-
-      // loop terakhir
-      if (i === str.length - 1) {
-        splitted.push(currentCharacter);
-      }
     }
   }
+  splitted.push(currentCharacter); // Selalu push karakter terakhir karena tidak di stop dengan - atau ,
 
   return splitted;
 }
@@ -41,34 +37,35 @@ function reverseJobCharacters(arr) {
 }
 
 // data alfabet agar bisa shift character dan decrypt job
-const alphabets = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-];
+// Data alphabet dalam objek untuk mempercepat lookup.
+const alphabets = {
+  a: "z",
+  b: "a",
+  c: "b",
+  d: "c",
+  e: "d",
+  f: "e",
+  g: "f",
+  h: "g",
+  i: "h",
+  j: "i",
+  k: "j",
+  l: "k",
+  m: "l",
+  n: "m",
+  o: "n",
+  p: "o",
+  q: "p",
+  r: "q",
+  s: "r",
+  t: "s",
+  u: "t",
+  v: "u",
+  w: "v",
+  x: "w",
+  y: "x",
+  z: "y",
+};
 function decryptJobCharacters(arr) {
   // loop setiap job
   // ["idaz","ivtumfs","anggara","ijqtufs","fika","ibdlfs"] -> ["idaz","hustler","anggara","hipster","fika","hacker"]
@@ -80,17 +77,8 @@ function decryptJobCharacters(arr) {
     for (let char = 0; char < job.length; char++) {
       const letter = job[char];
 
-      // cari char di array alphabet
-      for (let alphabet = 0; alphabet < alphabets.length; alphabet++) {
-        if (letter == alphabets[alphabet]) {
-          // shift ke kiri, jika 0 (a) shift ke akhir (z)
-          if (alphabet === 0) {
-            decrypted += alphabets[alphabets.length - 1];
-          } else {
-            decrypted += alphabets[alphabet - 1];
-          }
-        }
-      }
+      // cari char di objek alphabets
+      decrypted += alphabets[letter];
     }
 
     // replace item di array
@@ -104,14 +92,10 @@ function makingDreamTeam(arr) {
   // ["idaz","hustler","anggara","hipster","fika","hacker"] -> [["idaz","hustler"],["anggara","hipster"],["fika","hacker"]]
   const team = [];
 
-  let member = [];
-  for (let i = 0; i < arr.length; i++) {
-    member.push(arr[i]);
-
-    if (member.length === 2) {
-      team.push(member);
-      member = [];
-    }
+  // Looping per dua elemen, langsung ambil 2 sekaligus untuk mengurangi jumlah iterasi,
+  // Kondisi arr.length - 1 karena kita mengambil dua sekaligus, jadi jika jumlah array ganjil data terakhir akan dilewati.
+  for (let i = 0; i < arr.length - 1; i += 2) {
+    team.push([arr[i], arr[i + 1]]);
   }
 
   return team;
@@ -135,34 +119,30 @@ function startUpMatchMaking(str) {
   // [["idaz","hustler"],["anggara","hipster"],["fika","hacker"]];
 
   // SECOND CHECK: Komposisi team sesuai kebutuhan
-  // cek job lengkap atau tidak
-  const requiredJobs = ["hustler", "hipster", "hacker"];
-  const foundJobs = [];
+  // cek job lengkap atau tidak. Disimpan dalam hashmap agar lebih efisien
+  const requiredJobs = {
+    hustler: false,
+    hipster: false,
+    hacker: false,
+  };
   for (let i = 0; i < data.length; i++) {
     const job = data[i][1];
 
     // loop jika job telah ditemukan agar tidak menambah ke array
-    let taken = false;
-    for (let j = 0; j < foundJobs.length; j++) {
-      if (job == foundJobs[j]) {
-        taken = true;
-        break;
-      }
-    }
+    let jobStatus = requiredJobs[job];
 
-    if (!taken) {
-      // cek apakah job sesuai requirement sebelum ditambahkan
-      for (let j = 0; j < requiredJobs.length; j++) {
-        if (job === requiredJobs[j]) {
-          foundJobs.push(job);
-        }
-      }
+    // Jika job false maka rubah. Jika job tidak ada tidak terpengaruh karena kita tidak rubah objeknya
+    if (jobStatus === false) {
+      requiredJobs[job] = true;
     }
   }
 
-  // finally pastikan apakah found jobs = required jobs.
-  if (requiredJobs.length != foundJobs.length) {
-    return "The job composition in the team is not suitable";
+  const requiredJobKeys = Object.keys(requiredJobs);
+  for (let i = 0; i < requiredJobKeys.length; i++) {
+    // Return jika salah satu false
+    if (!requiredJobs[requiredJobKeys[i]]) {
+      return "The job composition in the team is not suitable";
+    }
   }
 
   // Return jika 2 cek telah berhasil
