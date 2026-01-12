@@ -1,0 +1,1 @@
+Ada beberapa commit yang saya buat. Yang di video presentasi adalah [commit kedua dari awal](https://github.com/theerlant/match-making-challenge/commit/ac9ba4aa103218fc66f266ce50b6442b5688b0cd). Commit-commit selanjutnya berupa improvisasi logika yang saya temukan.
